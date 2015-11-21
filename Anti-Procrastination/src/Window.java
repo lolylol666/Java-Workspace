@@ -105,11 +105,17 @@ public class Window implements ActionListener
 		{
 			case "start":
 				task.start(1, 1);
+				btnStart.setBackground(Color.RED);
+				btnStart.setText("stop");
+				
 				lblTimer.setForeground(Color.BLACK);
 				btnStart.setActionCommand("stop");
 				break;
 			case "stop":
 				task.stop();
+				btnStart.setBackground(new Color(0, 255, 0));
+				btnStart.setText("start");
+				
 				lblTimer.setForeground(Color.RED);
 				btnStart.setActionCommand("start");
 				break;
