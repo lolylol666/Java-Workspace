@@ -71,7 +71,7 @@ public class Window implements ActionListener
 		
 		contentPane = new JPanel(null);
 		frmProcrannilatorPrototype.setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[grow]", "[grow][20px][grow]"));
+		contentPane.setLayout(new MigLayout("", "[grow][grow]", "[grow][20px][grow]"));
 		
 		lblTimer = new JLabel("Timer");
 		lblTimer.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -80,14 +80,14 @@ public class Window implements ActionListener
 		lblTimer.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTimer.setForeground(new Color(255, 0, 0));
 		lblTimer.setBackground(new Color(255, 255, 255));
-		contentPane.add(lblTimer, "cell 0 0,grow");
+		contentPane.add(lblTimer, "cell 0 0 2 1,grow");
 		
 		btnStart = new JButton("Start");
 		btnStart.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnStart.setBorder(null);
 		btnStart.setBackground(new Color(0, 255, 0));
 		btnStart.setFont(new Font("Tahoma", Font.BOLD, 20));
-		contentPane.add(btnStart, "cell 0 2,grow");
+		contentPane.add(btnStart, "cell 0 2 2 1,grow");
 		btnStart.addActionListener(this);
 		btnStart.setActionCommand("start");
 		
