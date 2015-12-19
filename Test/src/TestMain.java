@@ -12,8 +12,8 @@ public class TestMain
 	{
 		String spaces = new String(new char[10]).replace("\0", "ok");
 		System.out.println(spaces);
-		int x = 9, y = 14;
-		double z = 2.3;
+		int x = 50, y = 20, i = 6;
+		float z = 5 / 10;
 		
 		System.out.println(z * (x * 100 / y));
 		TestInterface max = (a, b) ->
@@ -31,6 +31,7 @@ public class TestMain
 		System.out.println(max.op(x, y));
 		System.out.println(min);
 		System.out.println(min.op(x, y));
+		System.out.println(x / y);
 		Timer timer = new Timer(1000, null);
 		timer.setCoalesce(true);
 	}
