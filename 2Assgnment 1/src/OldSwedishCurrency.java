@@ -5,9 +5,7 @@ public class OldSwedishCurrency
 
 	public OldSwedishCurrency()
 	{
-		riksdaler = 0;
-		skillings = 0;
-		runstyckens = 0;
+		this(0, 0, 0);
 	}
 
 	public OldSwedishCurrency(int riksdaler, int skillings, int runstyckens)
