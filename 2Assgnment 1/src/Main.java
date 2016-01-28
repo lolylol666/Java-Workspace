@@ -1,3 +1,10 @@
+
+// -------------------------------------------------------
+// Assignment 1
+// Written by: Shiqi Lu 40003741
+// For COMP 249 Section PP – Winter 2016
+// --------------------------------------------------------
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,18 +15,22 @@ public class Main
 	private static Scanner			keyIn;
 
 	private static HouseholdGoods[]	goodsArray;
-	private static int				index		= 0;
+	private static int				index		= 0;		// Keeps the usage
+															// of the array in
+															// check, to avoid
+															// going out of
+															// bound.
 
 	public static void main(String[] args)
 	{
 		keyIn = new Scanner(System.in);
 		goodsArray = new HouseholdGoods[100];
 		int input;
-
+		// Initial welcome message.
 		System.out.println("-------------------------------------------------------------------------------");
 		System.out.println("Welcome to Shiqi Lu's marvelous Household Goods sold in swedish currency store!");
 		System.out.println("-------------------------------------------------------------------------------");
-
+		// Main menu
 		while (true)
 		{
 			System.out.println("What would you like to do?");
@@ -31,7 +42,8 @@ public class Main
 			System.out.println("6. Quit");
 			System.out.println("Please enter your choice --> ");
 
-			if (keyIn.hasNextInt())
+			if (keyIn.hasNextInt()) // Checks validity of input to avoid
+									// exceptions
 			{
 				input = keyIn.nextInt();
 				keyIn.nextLine();
@@ -64,16 +76,16 @@ public class Main
 
 	}
 
-	private static void addItem()
+	private static void addItem() // Method used to add new items to inventory
 	{
-		for (int i = 1; !checkPass(); i++)
+		for (int i = 1; !checkPass(); i++) // Password verification
 		{
 			if (i == 4)
 				return;
 			System.out.println("You have entered a wrong password (attempt " + i + " of 3). Please try again.");
 		}
 
-		if (index < 100)
+		if (index < 100) // Making sure there is space left
 		{
 			String type, description;
 			OldSwedishCurrency price;
@@ -91,12 +103,15 @@ public class Main
 
 			index++;
 		} else
-			System.out.println("Array is full. Cannot add more than 100 items!");
+			System.out.println("Array is full. Cannot add more than 100 items!"); // Otherwise
+																					// show
+																					// message
 	}
 
-	private static void changeItem()
+	private static void changeItem() // Method used to changed inventory items
+										// caracteristics
 	{
-		for (int i = 1; !checkPass(); i++)
+		for (int i = 1; !checkPass(); i++) // Checls password
 		{
 			if (i == 4)
 				return;
@@ -108,7 +123,8 @@ public class Main
 		System.out.println("Please enter the item number you wish to update: ");
 		itemNumber = keyIn.nextInt();
 
-		while (itemNumber >= index || itemNumber < 0)
+		while (itemNumber >= index || itemNumber < 0) // Checks validity of item
+														// number
 		{
 			System.out.println("There is no item at that index. Enter another or enter -1 to quit to main menu: ");
 			if ((itemNumber = keyIn.nextInt()) == -1)
@@ -121,13 +137,13 @@ public class Main
 		{
 			int input;
 
-			while (true)
+			while (true) // Asks user which field he wants to change
 			{
 				System.out.println(
 						"What would you like to change?\n1. Type\n2. Description\n3. Price\n4. Quit\nEnter choice -->");
 				if (keyIn.hasNextInt())
 				{
-					input = keyIn.nextInt();
+					input = keyIn.nextInt(); // Making sure the choice is valid
 					if (input >= 1 && input <= 4)
 						break;
 				} else
@@ -152,7 +168,8 @@ public class Main
 					{
 						System.out.println("Enter a new price in format riksdaler, skillings and runstyckens: ");
 						int ri, sk, ru;
-						if (keyIn.hasNextInt())
+						if (keyIn.hasNextInt()) // Once again, making sure the
+												// inputs are 3 valid integers
 						{
 							ri = keyIn.nextInt();
 							if (keyIn.hasNextInt())
@@ -177,7 +194,10 @@ public class Main
 
 	}
 
-	private static void displayItem(int itemNumber)
+	private static void displayItem(int itemNumber) // Method that displays the
+													// caracteristics of the
+													// item pointed to by
+													// itemNumber
 	{
 		System.out.println("Item #: " + itemNumber);
 		System.out.println("Type: " + goodsArray[itemNumber].getType());
@@ -185,7 +205,7 @@ public class Main
 		System.out.println("Price: " + goodsArray[itemNumber].getPrice().toString());
 	}
 
-	private static void displayAllType()
+	private static void displayAllType() // Method allowing search by type
 	{
 		System.out.println("Enter the type you are searching for: ");
 		String input = keyIn.nextLine();
@@ -203,7 +223,7 @@ public class Main
 			System.out.println("Nothing found.");
 	}
 
-	private static void displayUnderPrice()
+	private static void displayUnderPrice() // Method allowing search by price
 	{
 		int count = 0;
 		OldSwedishCurrency price;
@@ -214,7 +234,7 @@ public class Main
 					"Enter the price under which you are searching for, in riksdaler, skillings and runstyckens: ");
 
 			int ri, sk, ru;
-			if (keyIn.hasNextInt())
+			if (keyIn.hasNextInt()) // Validity check.
 			{
 				ri = keyIn.nextInt();
 				if (keyIn.hasNextInt())
@@ -244,7 +264,7 @@ public class Main
 			System.out.println("Nothing found.");
 	}
 
-	private static void stats()
+	private static void stats() // Sub-menu for statistics
 	{
 		while (true)
 		{
@@ -273,7 +293,13 @@ public class Main
 							}
 							break;
 						case 3:
-							List<String> goodsList = new ArrayList<String>();
+							List<String> goodsList = new ArrayList<String>(); // Creates
+																				// an
+																				// ArrayList
+																				// containing
+																				// all
+																				// existing
+																				// types
 							for (int i = 0; i < index; i++)
 							{
 								if (!goodsList.contains(goodsArray[i].getType()))
@@ -281,7 +307,11 @@ public class Main
 									goodsList.add(goodsArray[i].getType());
 								}
 							}
-							for (String itemType : goodsList)
+							for (String itemType : goodsList) // Iterate through
+																// the list and
+																// count the
+																// number of
+																// each type
 							{
 								int typeNumber = 0;
 								for (int i = 0; i < index; i++)
@@ -295,7 +325,8 @@ public class Main
 							break;
 						case 4:
 							int sum = 0;
-							for (int i = 0; i < index; i++)
+							for (int i = 0; i < index; i++) // Calculates the
+															// average price
 							{
 								sum += goodsArray[i].getPrice().convertToRunstycken();
 							}
@@ -314,7 +345,8 @@ public class Main
 		}
 	}
 
-	private static int lowestPrice()
+	private static int lowestPrice() // Function that returns the lowest price
+										// inthe inventory
 	{
 		int result = 0;
 		for (int i = 0, comp = goodsArray[0].getPrice().convertToRunstycken(); i < index; i++)
@@ -328,7 +360,8 @@ public class Main
 		return result;
 	}
 
-	private static int highestPrice()
+	private static int highestPrice() // Function that returns the highest price
+										// in the inventory
 	{
 		int result = 0;
 		for (int i = 0, comp = goodsArray[0].getPrice().convertToRunstycken(); i < index; i++)
@@ -342,7 +375,8 @@ public class Main
 		return result;
 	}
 
-	private static boolean checkPass()
+	private static boolean checkPass() // Method that checks if the password
+										// entered is valid.
 	{
 		System.out.println("Please enter password: ");
 		String pass = keyIn.nextLine();
