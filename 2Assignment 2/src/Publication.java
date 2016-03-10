@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public class Publication
+public class Publication implements Serializable
 {
 	private long	publication_code;
 	private String	publication_name;
