@@ -63,10 +63,7 @@ public class PublicationListingProcess2
 			
 			ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream("Publications.dat"));
 			
-			// for(int i=0;i<PublicationArray.length;i++)
-			// {
 			output.writeObject(PublicationArray);
-			// }
 			
 			input.close();
 			output.close();
