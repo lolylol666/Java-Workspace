@@ -20,41 +20,49 @@ public class PublicationListingProcess1
 	{
 		System.out.println("Welcome to Publication Listing Process 1.");
 		System.out.println("Please enter the name of the output file:");
-		File outFile;
+		String fileName;
+		Scanner input = new Scanner(System.in);
 		
-		while (true)
+		do
 		{
-			Scanner input = new Scanner(System.in);
-			String fileName = input.nextLine();
-			outFile = new File(fileName);
-			input.close();
+			
+			fileName = input.nextLine();
+			File outFile = new File(fileName);
+			
 			if (!outFile.exists() || !outFile.isFile())
 				break;
+				
 			long size = outFile.length();
 			System.out.println("This file [" + size + " bytes] already exists. Please enter another:");
-		}
+		} while (true);
 		
 		try
 		{
 			Scanner fileInput;
 			PrintWriter fileOutput;
-			Scanner finalFile;
 			fileInput = new Scanner(new FileReader("PublicationData_Input.txt"));
-			fileOutput = new PrintWriter(outFile);
+			fileOutput = new PrintWriter(fileName);
 			
 			correctListOfItems(fileInput, fileOutput);
-			printFileItems(fileInput);
-			
-			finalFile = new Scanner(new FileReader(outFile));
-			printFileItems(finalFile);
-			
 			fileInput.close();
 			fileOutput.close();
 			
-		} catch (FileNotFoundException e)
+			System.out.println("PublicationData_Input.txt:");
+			printFileItems(new Scanner(new FileReader("PublicationData_Input.txt")));
+			
+			System.out.println(fileName + ":");
+			printFileItems(new Scanner(new FileReader(fileName)));
+			
+			input.close();
+			
+		} catch (
+		
+		FileNotFoundException e)
+		
 		{
 			e.printStackTrace();
 		}
+		
 	}
 	
 	public static void correctListOfItems(Scanner input, PrintWriter output)
@@ -64,8 +72,18 @@ public class PublicationListingProcess1
 		
 		while (input.hasNextLine())
 		{
-			lines++;
-			list.add(input.nextLine());
+			String line = input.nextLine();
+			if (line.length() != 0)
+			{
+				lines++;
+				list.add(line);
+			}
+		}
+		
+		if (lines <= 1)
+		{
+			System.out.println("Nothing to do.");
+			return;
 		}
 		
 		PublicationArray = new Publication[lines];
@@ -74,6 +92,7 @@ public class PublicationListingProcess1
 		for (int i = 0; i < PublicationArray.length; i++)
 		{
 			Scanner listReader = new Scanner(list.get(i));
+			
 			long pubCode;
 			PublicationArray[i] = new Publication(pubCode = listReader.nextLong(), listReader.next(),
 					listReader.nextInt(), listReader.next(), listReader.nextDouble(), listReader.nextInt());
@@ -83,8 +102,8 @@ public class PublicationListingProcess1
 		
 		for (int i = 0; i < pubCodeList.size(); i++)
 		{
-			int index = dupeCheck(i, pubCodeList);
-			if (index >= 0)
+			int index;
+			while ((index = dupeCheck(i, pubCodeList)) >= 0)
 			{
 				System.out.println("There is a duplicate publication code [" + pubCodeList.get(index) + "] for entry "
 						+ index + ".");
@@ -98,7 +117,6 @@ public class PublicationListingProcess1
 					{
 						try
 						{
-							codeIn.close();
 							throw new CopyCodeException();
 						} catch (CopyCodeException e)
 						{
@@ -106,7 +124,6 @@ public class PublicationListingProcess1
 						}
 					} else
 					{
-						codeIn.close();
 						break;
 					}
 				}
@@ -121,7 +138,6 @@ public class PublicationListingProcess1
 					+ PublicationArray[i].getPublication_authorname() + " " + PublicationArray[i].getPublication_cost()
 					+ " " + PublicationArray[i].getPublication_nbpages());
 		}
-		
 	}
 	
 	private static int dupeCheck(int index, List<Long> pubCodeList)
@@ -130,8 +146,10 @@ public class PublicationListingProcess1
 		{
 			if (i != index)
 			{
-				if (pubCodeList.get(index) == pubCodeList.get(i))
+				if (pubCodeList.get(index).equals(pubCodeList.get(i)))
+				{
 					return i;
+				}
 			}
 		}
 		return -1;

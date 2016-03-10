@@ -11,7 +11,6 @@ public class Publication
 	public Publication(long publication_code, String publication_name, int publication_year,
 			String publication_authorname, double publication_cost, int publication_nbpages)
 	{
-		super();
 		this.publication_code = publication_code;
 		this.publication_name = publication_name;
 		this.publication_year = publication_year;
