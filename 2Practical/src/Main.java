@@ -13,6 +13,7 @@ public class Main
 		directory = input.nextLine();
 
 		System.out.println(getSize(new File(directory)) + " bytes");
+		input.close();
 	}
 
 	public static long getSize(File file)
