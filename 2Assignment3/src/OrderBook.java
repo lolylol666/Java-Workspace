@@ -36,14 +36,12 @@ public class OrderBook
 		} else
 		{
 			Node position = sort(price);
-			if (position == head)
-				head = new Node(bidOrder, null, null);
-			else if (position == null)
+			if (position == head.previous)
 			{
-				head.previous = new Node(bidOrder, position, head);
+				head.previous = new Node(bidOrder, null, head);
 				head = head.previous;
 			} else
-				position.next = new Node(bidOrder, position, position.next);
+				position = new Node(bidOrder, position, ((position == null) ? null : position.next));
 		}
 		match();
 	}
@@ -58,14 +56,12 @@ public class OrderBook
 		} else
 		{
 			Node position = sort(price);
-			if (position == head)
-				head = new Node(offerOrder, null, null);
-			else if (position == null)
+			if (position == head.previous)
 			{
-				head.previous = new Node(offerOrder, position, head);
+				head.previous = new Node(offerOrder, null, head);
 				head = head.previous;
 			} else
-				position.next = new Node(offerOrder, position, position.next);
+				position = new Node(offerOrder, position, position.next);
 		}
 		match();
 	}
@@ -74,8 +70,6 @@ public class OrderBook
 	{
 		Node current;
 		current = head;
-		if (current == null)
-			return head;
 		while (current.order.getPrice() <= price)
 		{
 			if (current.next == null)
@@ -85,81 +79,68 @@ public class OrderBook
 		return current.previous;
 	}
 	
-	private void deleteOrder(Node node)
+	private Node deleteOrder(Node node)
 	{
 		if (node.previous != null)
+		{
 			node.previous.next = node.next;
+		}
 		if (node.next != null)
 			node.next.previous = node.previous;
+		if (node == head)
+		{
+			head = node.next;
+		}
 		node = null;
+		return node;
 	}
 	
 	private void match()
 	{
-		Node cursor = head;
-		
-		while (cursor.next != null)
+		getBBO();
+		while (bestBid.order.getPrice() >= bestOffer.order.getPrice() && bestOffer.order.getPrice() > 0)
 		{
-			Node pointer = cursor.next;
-			while (cursor.order.getClass() != pointer.order.getClass() && cursor.order instanceof OfferOrder)
+			System.out.println("Match found:\nOff: " + bestOffer.order.getPrice() + "\t" + bestOffer.order.getVolume()
+					+ "\t" + bestOffer.order.getID() + "\nBid: " + bestBid.order.getPrice() + "\t"
+					+ bestBid.order.getVolume() + "\t" + bestBid.order.getID() + "\n");
+					
+			if (bestBid.order.getVolume() < bestOffer.order.getVolume())
 			{
-				if (cursor.order.getPrice() < bestOffer.order.getPrice())
-				{
-					System.out.println("Match found:\nOff: " + cursor.order.getPrice() + "\t" + cursor.order.getVolume()
-							+ "\t" + cursor.order.getID() + "\nBid: " + pointer.order.getPrice() + "\t"
-							+ pointer.order.getVolume() + "\t" + pointer.order.getID());
-					if (cursor.order.getVolume() < pointer.order.getVolume())
-					{
-						pointer.order.setVolume(pointer.order.getVolume() - cursor.order.getVolume());
-						deleteOrder(cursor);
-					} else if (cursor.order.getVolume() > pointer.order.getVolume())
-					{
-						cursor.order.setVolume(cursor.order.getVolume() - pointer.order.getVolume());
-						pointer = pointer.next;
-						deleteOrder(pointer.previous);
-					} else
-					{
-						deleteOrder(cursor);
-						deleteOrder(pointer);
-					}
-				} else if (pointer.order.getPrice() > bestBid.order.getPrice())
-				{
-					System.out.println("Match found:\nOff: " + cursor.order.getPrice() + "\t" + cursor.order.getVolume()
-							+ "\t" + cursor.order.getID() + "\nBid: " + pointer.order.getPrice() + "\t"
-							+ pointer.order.getVolume() + "\t" + pointer.order.getID());
-					if (cursor.order.getVolume() < pointer.order.getVolume())
-					{
-						pointer.order.setVolume(pointer.order.getVolume() - cursor.order.getVolume());
-						cursor = cursor.previous;
-						deleteOrder(cursor.next);
-					} else if (cursor.order.getVolume() > pointer.order.getVolume())
-					{
-						cursor.order.setVolume(cursor.order.getVolume() - pointer.order.getVolume());
-						deleteOrder(pointer);
-					} else
-					{
-						deleteOrder(cursor);
-						deleteOrder(pointer);
-					}
-				}
+				bestOffer.order.setVolume(bestOffer.order.getVolume() - bestBid.order.getVolume());
+				bestBid = deleteOrder(bestBid);
+			} else if (bestOffer.order.getVolume() < bestBid.order.getVolume())
+			{
+				bestBid.order.setVolume(bestBid.order.getVolume() - bestOffer.order.getVolume());
+				bestOffer = deleteOrder(bestOffer);
+			} else
+			{
+				bestBid = deleteOrder(bestBid);
+				bestOffer = deleteOrder(bestOffer);
 			}
-			cursor = cursor.next;
+			getBBO();
 		}
+	}
+	
+	private void getBBO()
+	{
+		Node cursor = head;
+		if (bestBid == null)
+			bestBid = new Node(new BidOrder("", 0, 0), null, null);
+		if (bestOffer == null)
+			bestOffer = new Node(new OfferOrder("", 0, 0), null, null);
+			
 		while (cursor != null)
 		{
-			if (cursor.order.getClass() != cursor.next.order.getClass())
+			if (cursor.order instanceof BidOrder)
 			{
-				if (cursor.order instanceof BidOrder)
-				{
+				if (bestBid.order.getPrice() < cursor.order.getPrice())
 					bestBid = cursor;
-					bestOffer = cursor.next;
-				} else
-				{
+			} else if (bestOffer.order.getPrice() != 0)
+			{
+				if (cursor.order.getPrice() < bestOffer.order.getPrice())
 					bestOffer = cursor;
-					bestBid = cursor.next;
-				}
-				break;
-			}
+			} else
+				bestOffer = cursor;
 			cursor = cursor.next;
 		}
 	}
@@ -167,10 +148,21 @@ public class OrderBook
 	public void outputBook()
 	{
 		System.out.println("Order book: ");
-		
-		for (Node cursor = head; cursor != null; cursor = cursor.next)
+		Node cursor = head;
+		if (head == null)
+			System.out.println("The book is empty");
+		else
 		{
-			System.out.println(cursor.order.toString());
+			while (cursor.next != null)
+			{
+				cursor = cursor.next;
+			}
+			
+			for (; cursor != null; cursor = cursor.previous)
+			{
+				System.out.println(cursor.order.toString());
+			}
+			System.out.println("\n");
 		}
 	}
 	
@@ -180,5 +172,6 @@ public class OrderBook
 		
 		System.out.println(bestOffer.order.toString());
 		System.out.println(bestBid.order.toString());
+		System.out.println("\n");
 	}
 }
