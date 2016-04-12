@@ -1,5 +1,5 @@
 
-public class Order
+public class Order implements Anonymous
 {
 	private String	ID;
 	private double	price;
@@ -44,6 +44,11 @@ public class Order
 	
 	public String toString()
 	{
-		return "";
+		return (((this instanceof BidOrder) ? "Bid: " : "Offer: ") + "\t" + this.price + "\t" + this.volume);
+	}
+	
+	public String printFullDetails()
+	{
+		return null;
 	}
 }
