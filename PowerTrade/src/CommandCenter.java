@@ -5,6 +5,9 @@ import java.util.LinkedHashMap;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 public class CommandCenter {
 
 	private static String poloKey="IPK7IHVC-NP8FYE48-YJZN4NM1-RFHCS8M0";
@@ -14,11 +17,11 @@ public class CommandCenter {
 	public static void main(String[] args) throws Exception 
 	{
 		Poloniex poloSession = new Poloniex(poloKey, poloSecret);
-		System.out.println(poloSession.returnBalances());
+		System.out.println(poloSession.returnBalances().keySet());
 		return;
 	}
 	
-	private static String calculateHMAC(String data, String secret)
+	public static String calculateHMAC(String data, String secret)
 		    throws Exception
 	{
 		    SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), HMAC_SHA512);
@@ -39,16 +42,18 @@ public class CommandCenter {
 		    return signature;
 	}
 	
-	private static String nonce() throws Exception
+	public static String nonce() throws Exception
 	{
 		String nonce = String.valueOf(System.currentTimeMillis());
 		Thread.sleep(1);
 		return nonce;
 	}
 	
-	private void parseJSON()
+	public static JsonObject parseJSON(String jResponse)
 	{
-		
+		Gson gson = new Gson();
+		JsonObject obj = gson.fromJson(jResponse, JsonObject.class);
+		return obj;
 	}
 	
 	static private class Poloniex
@@ -76,11 +81,11 @@ public class CommandCenter {
 			
 			private void sign(String sCommand) throws Exception
 			{
-				String sign = calculateHMAC(sCommand, APIsecret);
+				String sign = CommandCenter.calculateHMAC(sCommand, APIsecret);
 				tradeAPI.conn.setRequestProperty("Sign", sign);
 			}
 			
-			private String returnBalances() throws Exception
+			private JsonObject returnBalances() throws Exception
 			{
 				
 				command = new LinkedHashMap<>();
@@ -89,7 +94,8 @@ public class CommandCenter {
 				String sCommand = tradeAPI.formatCommand(command);
 				sign(sCommand);
 				
-				String response = tradeAPI.sendPostRequest(sCommand);;
+				String jResponse = tradeAPI.sendPostRequest(sCommand);
+				JsonObject response = CommandCenter.parseJSON(jResponse);
 				return response;
 			}
 			
