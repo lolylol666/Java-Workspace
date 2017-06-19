@@ -1,5 +1,6 @@
 import java.net.URL;
 import java.util.Formatter;
+import java.util.LinkedHashMap;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -13,6 +14,7 @@ public class CommandCenter {
 	public static void main(String[] args) throws Exception 
 	{
 		Poloniex poloSession = new Poloniex(poloKey, poloSecret);
+		System.out.println(poloSession.returnBalances());
 		return;
 	}
 	
@@ -37,6 +39,13 @@ public class CommandCenter {
 		    return signature;
 	}
 	
+	private static String nonce() throws Exception
+	{
+		String nonce = String.valueOf(System.currentTimeMillis());
+		Thread.sleep(1);
+		return nonce;
+	}
+	
 	private void parseJSON()
 	{
 		
@@ -49,6 +58,7 @@ public class CommandCenter {
 		 private String tURL="https://poloniex.com/tradingApi";
 		 private String pURL="https://poloniex.com/public";
 		 private API tradeAPI;
+		 private LinkedHashMap<String, String> command;
 		 
 			public Poloniex(String key, String secret) throws Exception {
 				URL tradeURL = new URL(tURL);
@@ -58,7 +68,8 @@ public class CommandCenter {
 				iniPolo();
 			}
 
-			private void iniPolo() throws Exception {
+			private void iniPolo() throws Exception 
+			{
 				tradeAPI.openConn();
 				tradeAPI.conn.setRequestProperty("Key", APIkey);
 			}
@@ -69,6 +80,18 @@ public class CommandCenter {
 				tradeAPI.conn.setRequestProperty("Sign", sign);
 			}
 			
+			private String returnBalances() throws Exception
+			{
+				
+				command = new LinkedHashMap<>();
+				command.put("command", "returnBalances");
+				command.put("nonce", nonce());
+				String sCommand = tradeAPI.formatCommand(command);
+				sign(sCommand);
+				
+				String response = tradeAPI.sendPostRequest(sCommand);;
+				return response;
+			}
 			
 			
 	}

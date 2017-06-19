@@ -1,9 +1,9 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class API {
@@ -24,15 +24,15 @@ public class API {
 
 	}
     
-	public String formatCommand(Map<String,Object> command) throws Exception
+	public String formatCommand(LinkedHashMap<String,String> command) throws Exception
 	{
 		StringBuilder postData = new StringBuilder();
-		for (Map.Entry<String,Object> param : command.entrySet()) 
+		for (Map.Entry<String,String> param : command.entrySet()) 
 	    {
 	        if (postData.length() != 0) postData.append('&');
 	        postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
 	        postData.append('=');
-	        postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+	        postData.append(URLEncoder.encode(param.getValue(), "UTF-8"));
 	    }
 	    
 		String sCommand = postData.toString();
