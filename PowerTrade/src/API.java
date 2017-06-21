@@ -3,62 +3,74 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class API {
-	
-	public URL url;
-     HttpURLConnection conn;
-    
-    
-    public API(URL url)
-    {
-    	this.url=url;
-    }
-    
-	public void openConn() throws Exception 
-	{
-		if(conn == null) conn = (HttpURLConnection)url.openConnection();
-		conn.setDoOutput(true);
+import com.google.gson.JsonArray;
 
-	}
-    
-	public String formatCommand(LinkedHashMap<String,String> command) throws Exception
-	{
-		StringBuilder postData = new StringBuilder();
-		for (Map.Entry<String,String> param : command.entrySet()) 
-	    {
-	        if (postData.length() != 0) postData.append('&');
-	        postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
-	        postData.append('=');
-	        postData.append(URLEncoder.encode(param.getValue(), "UTF-8"));
-	    }
-	    
-		String sCommand = postData.toString();
+public class API {
+
+	private HttpURLConnection conn;
+
+	public String formatCommand(Map<String, String> command) throws Exception {
+		StringBuilder paramData = new StringBuilder();
+		for (Map.Entry<String, String> param : command.entrySet()) {
+			if (paramData.length() != 0)
+				paramData.append('&');
+			paramData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+			paramData.append('=');
+			paramData.append(URLEncoder.encode(param.getValue(), "UTF-8"));
+		}
+
+		String sCommand = paramData.toString();
 		return sCommand;
 	}
 
-	public String sendPostRequest(String fCommand) throws Exception
-	{
-		byte[] byteCommand = fCommand.getBytes("UTF-8");	    
+	public void setHeader(String[] headers) {
+		for (int x = 0; x < headers.length; x += 2) {
+			conn.setRequestProperty(headers[x], headers[x + 1]);
+		}
+	}
+
+	Response sendPostRequest(URL url, String[] headers, String pCommand) throws Exception {
+		
+		conn = (HttpURLConnection) url.openConnection();
+		conn.setDoOutput(true);
 		conn.setRequestMethod("POST");
-	    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-	    conn.setRequestProperty("Content-Length", String.valueOf(byteCommand.length));
-	        
-	    conn.getOutputStream().write(byteCommand);
-	    String response = readResponse();
+		setHeader(headers);
+		byte[] byteCommand = pCommand.getBytes("UTF-8");
+		
+		conn.getOutputStream().write(byteCommand);
+
+		Response response = readResponse();
 		return response;
 	}
 
-	private String readResponse() throws Exception
-	{
-		BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-        StringBuilder sb = new StringBuilder();
-        for (String line; (line = in.readLine())!= null;)
-            sb.append(line);
-        String response = sb.toString();
+	Response sendGetRequest(URL gCommand) throws Exception {
+		conn = (HttpURLConnection) gCommand.openConnection();
+		conn.setRequestMethod("GET");
+
+		Response response = readResponse();
 		return response;
+	}
+
+	private Response readResponse() throws Exception {
+		BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+		StringBuilder sb = new StringBuilder();
+		for (String line; (line = in.readLine()) != null;)
+			sb.append(line);
+		String response = sb.toString();
+		
+		return new Response(CommandCenter.parseJSON(response),conn.getResponseCode());
+	}
+
+	class Response {
+		JsonArray responseMsg;
+		int responseCode;
+
+		public Response(JsonArray message, int responseCode) {
+			this.responseMsg = message;
+			this.responseCode = responseCode;
+		}
 	}
 
 }
