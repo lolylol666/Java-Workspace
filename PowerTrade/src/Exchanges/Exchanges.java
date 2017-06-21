@@ -1,10 +1,13 @@
+package Exchanges;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import API.API;
+import Nexus.CommandCenter;
 
 public class Exchanges {
-	static class Poloniex {
+	public static class Poloniex {
 		private String APIkey;
 		private String APIsecret;
 		private String tURL = "https://poloniex.com/tradingApi";
@@ -62,7 +65,7 @@ public class Exchanges {
 			return response;
 		}
 
-		API.Response returnChartData(String... params) throws Exception 
+		public API.Response returnChartData(String... params) throws Exception 
 		{
 			String[] _commands = {"command","returnChartData",
 								"currencyPair",params[0],
@@ -72,13 +75,13 @@ public class Exchanges {
 			return sendGetCommand(_commands);
 		}
 		
-		API.Response returnAvailableAccountBalances() throws Exception
+		public API.Response returnAvailableAccountBalances() throws Exception
 		{
 			String[] _commands = { "command", "returnAvailableAccountBalances" };
 			return sendPostCommand(_commands);		
 		}
 
-		API.Response returnBalances() throws Exception {
+		public API.Response returnBalances() throws Exception {
 			String[] _commands = { "command", "returnBalances" };
 			return sendPostCommand(_commands);
 		}

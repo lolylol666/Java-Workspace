@@ -1,3 +1,4 @@
+package Nexus;
 import java.util.Formatter;
 
 import javax.crypto.Mac;
@@ -6,29 +7,32 @@ import javax.crypto.spec.SecretKeySpec;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
+import API.API;
+import Exchanges.Exchanges.Poloniex;
+
 public class CommandCenter {
 
 	private static String poloKey = "IPK7IHVC-NP8FYE48-YJZN4NM1-RFHCS8M0";
 	private static String poloSecret = "e36864198a437d1ac55476696870ccae7a943e0dceac507958747b1de6fa691664c0dce6cea97ac80220593f3d82466d838a44c00d69c2db13eb75007502a899";
-	static final String HMAC_SHA512 = "HmacSHA512";
+	public static final String HMAC_SHA512 = "HmacSHA512";
 
 	public static void main(String[] args) throws Exception {
-		Exchanges.Poloniex poloSession = new Exchanges.Poloniex(poloKey, poloSecret);
+		Poloniex poloSession = new Poloniex(poloKey, poloSecret);
 		API.Response response;
 		
 		response = poloSession.returnAvailableAccountBalances();
 		
-		Wallet poloWallet = new Wallet(response.responseMsg);
+		Wallet poloWallet = new Wallet(response.getResponseMsg());
 		poloWallet.displayBalances();
 		
-		System.out.println(response.responseCode);
-		System.out.println(response.responseMsg.get(0).getAsJsonObject().get("exchange"));
+		System.out.println(response.getResponseCode());
+		System.out.println(response.getResponseMsg().get(0).getAsJsonObject().get("exchange"));
 		
 		
 		Thread.sleep(1000);
 		response = poloSession.returnChartData("BTC_XMR","14400","1495331302","1498009702");
-		System.out.println(response.responseCode);
-		System.out.println(response.responseMsg.get(0).getAsJsonObject().get("date"));
+		System.out.println(response.getResponseCode());
+		System.out.println(response.getResponseMsg().get(0).getAsJsonObject().get("date"));
 		
 		return;
 	}
@@ -50,7 +54,7 @@ public class CommandCenter {
 		return signature;
 	}
 
-	static String nonce() throws Exception {
+	public static String nonce() throws Exception {
 		String nonce = String.valueOf(System.currentTimeMillis());
 		Thread.sleep(1);
 		return nonce;

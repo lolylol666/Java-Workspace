@@ -1,3 +1,4 @@
+package API;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -6,6 +7,8 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 import com.google.gson.JsonArray;
+
+import Nexus.CommandCenter;
 
 public class API {
 
@@ -25,13 +28,7 @@ public class API {
 		return sCommand;
 	}
 
-	public void setHeader(String[] headers) {
-		for (int x = 0; x < headers.length; x += 2) {
-			conn.setRequestProperty(headers[x], headers[x + 1]);
-		}
-	}
-
-	Response sendPostRequest(URL url, String[] headers, String pCommand) throws Exception {
+	public Response sendPostRequest(URL url, String[] headers, String pCommand) throws Exception {
 		
 		conn = (HttpURLConnection) url.openConnection();
 		conn.setDoOutput(true);
@@ -45,12 +42,18 @@ public class API {
 		return response;
 	}
 
-	Response sendGetRequest(URL gCommand) throws Exception {
+	public Response sendGetRequest(URL gCommand) throws Exception {
 		conn = (HttpURLConnection) gCommand.openConnection();
 		conn.setRequestMethod("GET");
 
 		Response response = readResponse();
 		return response;
+	}
+
+	private void setHeader(String[] headers) {
+		for (int x = 0; x < headers.length; x += 2) {
+			conn.setRequestProperty(headers[x], headers[x + 1]);
+		}
 	}
 
 	private Response readResponse() throws Exception {
@@ -63,14 +66,24 @@ public class API {
 		return new Response(CommandCenter.parseJSON(response),conn.getResponseCode());
 	}
 
-	class Response {
-		JsonArray responseMsg;
-		int responseCode;
+	public class Response {
+		private JsonArray responseMsg;
+		private int responseCode;
 
 		public Response(JsonArray message, int responseCode) {
 			this.responseMsg = message;
 			this.responseCode = responseCode;
 		}
+
+		public JsonArray getResponseMsg() {
+			return responseMsg;
+		}
+
+		public int getResponseCode() {
+			return responseCode;
+		}
+		
+		
 	}
 
 }

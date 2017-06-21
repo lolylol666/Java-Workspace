@@ -1,3 +1,4 @@
+package Chart;
 import java.math.BigDecimal;
 
 public class Chart {
