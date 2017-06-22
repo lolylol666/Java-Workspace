@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
 import API.API;
-import Exchanges.Exchanges.Poloniex;
+import Exchanges.Poloniex;
 
 public class CommandCenter {
 
