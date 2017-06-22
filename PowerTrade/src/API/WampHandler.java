@@ -1,8 +1,7 @@
 package API;
 import java.util.concurrent.TimeUnit;
 
-import Book.OrderBook;
-import Chart.ClientStatusChangedAction;
+import Book.PublicOrderBook;
 import ws.wamp.jawampa.WampClient;
 import ws.wamp.jawampa.WampClientBuilder;
 import ws.wamp.jawampa.transport.netty.NettyWampClientConnectorProvider;
@@ -14,8 +13,8 @@ public class WampHandler {
 
 	private final WampClient client;
 
-	private final OrderBook orderBookAsk;
-	private final OrderBook orderBookBid;
+	private final PublicOrderBook orderBookAsk;
+	private final PublicOrderBook orderBookBid;
 
 	public WampHandler() throws Exception
 	{
@@ -30,8 +29,8 @@ public class WampHandler {
 		builder.withReconnectInterval(RECONNECT_INTERVAL_SEC, TimeUnit.SECONDS);
 
 		client = builder.build();
-		orderBookAsk = new OrderBook();
-		orderBookBid = new OrderBook();
+		orderBookAsk = new PublicOrderBook();
+		orderBookBid = new PublicOrderBook();
 
 		client.statusChanged().subscribe(new ClientStatusChangedAction(client, orderBookAsk, orderBookBid));
 	}

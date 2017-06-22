@@ -1,10 +1,13 @@
-package Chart;
+package API;
 
 
 
 
-import Book.OrderBook;
-import Nexus.OrderType;
+import Book.OrderType;
+import Book.PubOrderBookUpdateAction;
+import Book.PublicOrderBook;
+import Chart.PrintTickerDataAction;
+import Chart.TradeHistoryUpdateAction;
 import rx.functions.Action1;
 import ws.wamp.jawampa.WampClient;
 import ws.wamp.jawampa.WampClient.ConnectedState;
@@ -15,10 +18,10 @@ import ws.wamp.jawampa.WampClient.State;
 public class ClientStatusChangedAction implements Action1<State>
 {
 	private final WampClient client;
-	private final OrderBook orderBookAsk;
-	private final OrderBook orderBookBid;
+	private final PublicOrderBook orderBookAsk;
+	private final PublicOrderBook orderBookBid;
 
-	public ClientStatusChangedAction(WampClient client, OrderBook orderBookAsk, OrderBook orderBookBid)
+	public ClientStatusChangedAction(WampClient client, PublicOrderBook orderBookAsk, PublicOrderBook orderBookBid)
 	{
 		this.client = client;
 		this.orderBookAsk = orderBookAsk;
@@ -48,9 +51,9 @@ public class ClientStatusChangedAction implements Action1<State>
 		for(int x=0;x<currency.length;++x)
 		{
 		client.makeSubscription(currency[x])
-				.subscribe(new OrderBookUpdateAction(orderBookAsk, OrderType.ASK));
+				.subscribe(new PubOrderBookUpdateAction(orderBookAsk, OrderType.ASK));
 		client.makeSubscription(currency[x])
-				.subscribe(new OrderBookUpdateAction(orderBookBid, OrderType.BID));
+				.subscribe(new PubOrderBookUpdateAction(orderBookBid, OrderType.BID));
 		client.makeSubscription(currency[x]).subscribe(new TradeHistoryUpdateAction());
 		}
 	}
