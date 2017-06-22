@@ -4,7 +4,7 @@ import java.util.List;
 
 import Book.OrderBook;
 import Book.PublicOrderBook;
-import Chart.Chart;
+import Chart.ChartFrame;
 import Chart.TickerRecord;
 import Chart.TradeHistory;
 import Exchanges.Poloniex;
@@ -16,7 +16,7 @@ public class Dashboard {
 	private PublicOrderBook	publicBuyBook, publicSellBook;
 	private OrderBook		myBuyBook, mySellBook;
 	
-	private Chart			chart;
+	private ChartFrame			chart;
 	private TradeHistory	tradeHistory;
 	
 	public Dashboard(String currency, Poloniex session) throws Exception {
@@ -77,7 +77,7 @@ public class Dashboard {
 		return mySellBook;
 	}
 	
-	public Chart getChart() {
+	public ChartFrame getChart() {
 		return chart;
 	}
 	

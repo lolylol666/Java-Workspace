@@ -1,7 +1,7 @@
 package Chart;
 import java.math.BigDecimal;
 
-public class Chart {
+public class ChartFrame {
 
 	
 	private class CandleStick
