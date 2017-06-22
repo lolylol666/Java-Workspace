@@ -6,8 +6,7 @@ import java.util.Map;
 import API.API;
 import Nexus.CommandCenter;
 
-public class Exchanges {
-	public static class Poloniex {
+public class Poloniex {
 		private String APIkey;
 		private String APIsecret;
 		private String tURL = "https://poloniex.com/tradingApi";
@@ -85,5 +84,4 @@ public class Exchanges {
 			String[] _commands = { "command", "returnBalances" };
 			return sendPostCommand(_commands);
 		}
-	}
 }
