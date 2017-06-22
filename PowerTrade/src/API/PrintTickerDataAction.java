@@ -1,5 +1,6 @@
-package Chart;
+package API;
 
+import Chart.TickerRecord;
 import rx.functions.Action1;
 import ws.wamp.jawampa.PubSubData;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package Nexus;
+package Book;
 
 import java.util.Collections;
 import java.util.Map;
@@ -11,12 +11,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author xkrajnan
  *
  */
-public class OrderBook
+public class PublicOrderBook
 {
 
 	private final Map<Double, Double> orders;
 
-	public OrderBook()
+	public PublicOrderBook()
 	{
 		this.orders = new ConcurrentHashMap<>();
 	}

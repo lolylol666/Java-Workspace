@@ -1,7 +1,8 @@
-package Chart;
+package API;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import Chart.Trade;
 import rx.functions.Action1;
 import ws.wamp.jawampa.PubSubData;
 

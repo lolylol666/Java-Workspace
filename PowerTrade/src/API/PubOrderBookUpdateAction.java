@@ -1,13 +1,13 @@
-package Chart;
+package API;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import Book.OrderBook;
-import Nexus.OrderType;
+import Book.OrderType;
+import Book.PublicOrderBook;
 import rx.functions.Action1;
 import ws.wamp.jawampa.PubSubData;
 
-public class OrderBookUpdateAction implements Action1<PubSubData>
+public class PubOrderBookUpdateAction implements Action1<PubSubData>
 {
 	private static final String ID_DATA = "data";
 	private static final String ID_UPDATE_TYPE = "type";
@@ -17,10 +17,10 @@ public class OrderBookUpdateAction implements Action1<PubSubData>
 	private static final String ID_ORDER_RATE = "rate";
 	private static final String ID_ORDER_AMOUNT = "amount";
 
-	private final OrderBook orderBook;
+	private final PublicOrderBook orderBook;
 	private final OrderType acceptedOrderType;
 
-	public OrderBookUpdateAction(OrderBook orderBook, OrderType acceptedOrderType)
+	public PubOrderBookUpdateAction(PublicOrderBook orderBook, OrderType acceptedOrderType)
 	{
 		this.orderBook = orderBook;
 		this.acceptedOrderType = acceptedOrderType;
