@@ -1,5 +1,7 @@
 package Nexus;
 
+import java.util.List;
+
 import Book.OrderBook;
 import Book.PublicOrderBook;
 import Chart.Chart;
@@ -83,10 +85,11 @@ public class Dashboard {
 		return tradeHistory;
 	}
 	
-	public class Panel {
-		private TickerRecord ticker;
+	public class TickerPanel {
+		private TickerRecord		ticker;
+		private List<TickerRecord>	tickersList;
 		
-		public Panel() {
+		public TickerPanel() {
 			
 		}
 		
