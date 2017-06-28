@@ -1,23 +1,24 @@
 package Nexus;
 
-import java.util.List;
-
+import API.API;
 import Book.OrderBook;
 import Book.PublicOrderBook;
-import Chart.ChartFrame;
+import Chart.CandleStickChart;
 import Chart.TickerRecord;
 import Chart.TradeHistory;
 import Exchanges.Poloniex;
 
 public class Dashboard {
 	
-	private String			currency;
-	private Poloniex		sessionHandler;
-	private PublicOrderBook	publicBuyBook, publicSellBook;
+	private final String			currency;
+	private final Poloniex		sessionHandler;
+	private final PublicOrderBook	publicBuyBook, publicSellBook;
 	private OrderBook		myBuyBook, mySellBook;
 	
-	private ChartFrame			chart;
+	private CandleStickChart			chart;
 	private TradeHistory	tradeHistory;
+	
+	private API.Response response;
 	
 	public Dashboard(String currency, Poloniex session) throws Exception {
 		this.currency = currency;
@@ -76,7 +77,7 @@ public class Dashboard {
 		return mySellBook;
 	}
 	
-	public ChartFrame getChart() {
+	public CandleStickChart getChart() {
 		return chart;
 	}
 	
@@ -88,20 +89,33 @@ public class Dashboard {
 		
 		
 		private TickerRecord		ticker;
-		private List<TickerRecord>	tickersList;
-		
+//		private List<TickerRecord>	tickersList;
+		private Wallet wallet;
+		private API.Response response;
 		Poloniex sessionHandler;
 		
-		public TickerPanel(Poloniex sessionHandler) {
-			
+		public TickerPanel(Poloniex sessionHandler) throws Exception {
+			this.sessionHandler=sessionHandler;
+			subscribeTicker();
+			updateWallet();
 		}
 		
-		public void subscribeTicker() {
-			
+		public void subscribeTicker() throws Exception {
+			sessionHandler.subscribeTicker(ticker);
+		}
+		
+		public void updateWallet() throws Exception {
+			response = sessionHandler.returnAvailableAccountBalances();
+			wallet=new Wallet(response.getResponseMsg());
 		}
 		
 		public TickerRecord getTicker() {
 			return ticker;
+		}
+		
+		public Wallet getWallet()
+		{
+			return wallet;
 		}
 	}
 }
