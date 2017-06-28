@@ -43,7 +43,7 @@ public class PushAPI {
 	}
 
 	public void subscribeToTicker(TickerRecord record) {
-		client.makeSubscription("ticker").subscribe(new PrintTickerDataAction(record));
+		client.makeSubscription("ticker").subscribe(new TickerUpdateAction(record));
 	}
 
 	public void subscribeToCoin(String currency, PublicOrderBook buyBook, PublicOrderBook sellBook,

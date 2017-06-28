@@ -22,6 +22,9 @@ public class Dashboard {
 	public Dashboard(String currency, Poloniex session) throws Exception {
 		this.currency = currency;
 		this.sessionHandler = session;
+		publicBuyBook = new PublicOrderBook();
+		publicSellBook = new PublicOrderBook();
+		tradeHistory = new TradeHistory();
 	}
 	
 	public void init() throws Exception {
@@ -82,14 +85,18 @@ public class Dashboard {
 	}
 	
 	public class TickerPanel {
+		
+		
 		private TickerRecord		ticker;
 		private List<TickerRecord>	tickersList;
 		
-		public TickerPanel() {
+		Poloniex sessionHandler;
+		
+		public TickerPanel(Poloniex sessionHandler) {
 			
 		}
 		
-		public void subTicker() {
+		public void subscribeTicker() {
 			
 		}
 		

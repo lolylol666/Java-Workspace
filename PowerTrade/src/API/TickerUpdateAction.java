@@ -4,11 +4,11 @@ import Chart.TickerRecord;
 import rx.functions.Action1;
 import ws.wamp.jawampa.PubSubData;
 
-public class PrintTickerDataAction implements Action1<PubSubData>
+public class TickerUpdateAction implements Action1<PubSubData>
 {
 	private TickerRecord record;
 	
-	public PrintTickerDataAction(TickerRecord record) {
+	public TickerUpdateAction(TickerRecord record) {
 		super();
 		this.record = record;
 	}
