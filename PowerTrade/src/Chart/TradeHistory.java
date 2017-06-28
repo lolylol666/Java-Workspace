@@ -13,6 +13,7 @@ public class TradeHistory
 {
 
 	private final ConcurrentLinkedQueue<Trade> trades;
+	private int change=0;
 
 	public TradeHistory()
 	{
@@ -27,6 +28,18 @@ public class TradeHistory
 	public Trade remove()
 	{
 		return trades.remove();
+	}
+	
+	public void addChange() {
+		++change;
+	}
+
+	public int getChange() {
+		return change;
+	}
+
+	public void resetChange() {
+		change = 0;
 	}
 
 	@Override

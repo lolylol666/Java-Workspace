@@ -4,14 +4,25 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import API.API;
+import API.PushAPI;
+import Book.PublicOrderBook;
+import Chart.TickerRecord;
+import Chart.TradeHistory;
 import Nexus.CommandCenter;
 
 public class Poloniex {
 		private String APIkey;
 		private String APIsecret;
-		private String tURL = "https://poloniex.com/tradingApi";
-		private String pURL = "https://poloniex.com/public";
 		private API tradeAPI;
+		private static final String T_URL = "https://poloniex.com/tradingApi";
+		private static final String P_URL = "https://poloniex.com/public";
+		
+		private PushAPI pushAPI;
+		private static final String POLONIEX_API_URL = "wss://api.poloniex.com";
+		private static final String REALM = "realm1";
+		private static final int RECONNECT_INTERVAL_SEC = 5;
+		private static boolean pushIsConnected=false;
+
 
 		public Poloniex(String key, String secret) throws Exception {
 			
@@ -45,7 +56,7 @@ public class Poloniex {
 			String[] postHeaders={"Key",APIkey,
 					"Sign",sign(sCommand)};
 
-			URL tradeURL = new URL(tURL);
+			URL tradeURL = new URL(T_URL);
 		
 			API.Response response = tradeAPI.sendPostRequest(tradeURL, postHeaders, sCommand);
 			
@@ -57,7 +68,7 @@ public class Poloniex {
 			Map<String,String> command = prepCommand(_commands);
 			String sCommand = tradeAPI.formatCommand(command);
 			
-			URL gCommand = new URL(pURL+"?"+sCommand);
+			URL gCommand = new URL(P_URL+"?"+sCommand);
 			
 			API.Response response = tradeAPI.sendGetRequest(gCommand);
 			
@@ -83,5 +94,29 @@ public class Poloniex {
 		public API.Response returnBalances() throws Exception {
 			String[] _commands = { "command", "returnBalances" };
 			return sendPostCommand(_commands);
+		}
+		
+		public void  startPushAPI() throws Exception
+		{
+			pushAPI = new PushAPI(this,POLONIEX_API_URL,REALM,RECONNECT_INTERVAL_SEC);
+		}
+
+		public void subscribeTicker(TickerRecord record) throws Exception {
+			if(pushIsConnected) pushAPI.subscribeToTicker(record);
+		}
+		
+		public void subscribeCoin(String currency, PublicOrderBook buyBook, PublicOrderBook sellBook,
+				TradeHistory history) throws Exception {
+			if(pushIsConnected) pushAPI.subscribeToCoin(currency, buyBook, sellBook, history);
+		}
+		
+		public void setPushState(boolean state)
+		{
+			pushIsConnected=state;
+		}
+		
+		public boolean getPushState()
+		{
+			return pushIsConnected; 
 		}
 }

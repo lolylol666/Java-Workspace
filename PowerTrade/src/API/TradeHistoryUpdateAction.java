@@ -3,22 +3,23 @@ package API;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import Chart.Trade;
+import Chart.TradeHistory;
 import rx.functions.Action1;
 import ws.wamp.jawampa.PubSubData;
 
-public class TradeHistoryUpdateAction implements Action1<PubSubData>
-{
+public class TradeHistoryUpdateAction implements Action1<PubSubData> {
 	private static final String ID_DATA = "data";
 	private static final String ID_UPDATE_TYPE = "type";
 	private static final String ID_NEW_TRADE = "newTrade";
 
-	public TradeHistoryUpdateAction()
-	{
+	private TradeHistory history;
+
+	public TradeHistoryUpdateAction(TradeHistory history) {
+		this.history = history;
 	}
 
 	@Override
-	public void call(PubSubData data)
-	{
+	public void call(PubSubData data) {
 		try {
 			for (JsonNode node : data.arguments()) {
 
@@ -33,6 +34,9 @@ public class TradeHistoryUpdateAction implements Action1<PubSubData>
 
 				Trade trade = new Trade(tradeData);
 				System.out.println(trade);
+
+				history.add(trade);
+				history.addChange();
 			}
 
 		} catch (Exception e) {

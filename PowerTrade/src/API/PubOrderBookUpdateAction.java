@@ -48,10 +48,12 @@ public class PubOrderBookUpdateAction implements Action1<PubSubData>
 						double rate = order.get(ID_ORDER_RATE).asDouble();
 						double amount = order.get(ID_ORDER_AMOUNT).asDouble();
 						orderBook.put(rate, amount);
+						orderBook.addChange();
 
 					} else if (updateType.equals(ID_ORDER_BOOK_REMOVE)) {
 						double rate = order.get(ID_ORDER_RATE).asDouble();
 						orderBook.remove(rate);
+						orderBook.addChange();
 					}
 
 					System.out.println(acceptedOrderType + ": " + orderBook);

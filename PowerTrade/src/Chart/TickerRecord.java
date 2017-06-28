@@ -12,8 +12,7 @@ import ws.wamp.jawampa.PubSubData;
  * @author xkrajnan
  *
  */
-public class TickerRecord
-{
+public class TickerRecord {
 	public static enum TickerField {
 		CURRENCY_PAIR, LAST, LOWEST_ASK, HIGHEST_BID, PERCENT_CHANGE, BASE_VOLUME, QUOTE_VOLUME, IS_FROZEN, HR24_HIGH, HR24_LOW
 	}
@@ -30,8 +29,9 @@ public class TickerRecord
 	private final double hr24high;
 	private final double hr24low;
 
-	public TickerRecord(PubSubData tickerData)
-	{
+	private int change = 0;
+
+	public TickerRecord(PubSubData tickerData) {
 		ArrayNode arguments = tickerData.arguments();
 
 		// there are no field names returned in data
@@ -47,14 +47,12 @@ public class TickerRecord
 		this.hr24low = getField(arguments, TickerField.HR24_LOW).asDouble();
 	}
 
-	private JsonNode getField(ArrayNode data, TickerField field)
-	{
+	private JsonNode getField(ArrayNode data, TickerField field) {
 		return data.get(field.ordinal());
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder builder = new StringBuilder();
 
 		builder.append(currencyPair).append(": ");
@@ -71,54 +69,60 @@ public class TickerRecord
 		return builder.toString();
 	}
 
-	public String getCurrencyPair()
-	{
+	public String getCurrencyPair() {
 		return currencyPair;
 	}
 
-	public double getLast()
-	{
+	public double getLast() {
 		return last;
 	}
 
-	public double getLowestAsk()
-	{
+	public double getLowestAsk() {
 		return lowestAsk;
 	}
 
-	public double getHighestBid()
-	{
+	public double getHighestBid() {
 		return highestBid;
 	}
 
-	public double getPercentChange()
-	{
+	public double getPercentChange() {
 		return percentChange;
 	}
 
-	public double getBaseVolume()
-	{
+	public double getBaseVolume() {
 		return baseVolume;
 	}
 
-	public double getQuoteVolume()
-	{
+	public double getQuoteVolume() {
 		return quoteVolume;
 	}
 
-	public boolean isFrozen()
-	{
+	public boolean isFrozen() {
 		return isFrozen;
 	}
 
-	public double getHr24high()
-	{
+	public double getHr24high() {
 		return hr24high;
 	}
 
-	public double getHr24low()
-	{
+	public double getHr24low() {
 		return hr24low;
+	}
+
+	public void addChange(int x) {
+		change=++x;
+	}
+	
+	public void addChange() {
+		++change;
+	}
+
+	public int getChange() {
+		return change;
+	}
+
+	public void resetChange() {
+		change = 0;
 	}
 
 }

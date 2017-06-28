@@ -24,12 +24,12 @@ public class Dashboard {
 		this.sessionHandler = session;
 	}
 	
-	public void init() {
-		subPublicBook();
-		updateMyBook();
+	public void init() throws Exception {
 		
+		subscribeCoinPushData();
+		
+		updateMyBook();
 		updateChart();
-		subHistory();
 	}
 	
 	public void updateAll() {
@@ -37,19 +37,15 @@ public class Dashboard {
 		updateChart();
 	}
 	
-	public void subPublicBook() {
-		
+	private void subscribeCoinPushData() throws Exception {
+		sessionHandler.subscribeCoin(currency, publicBuyBook, publicSellBook, tradeHistory);
 	}
-	
+
 	public void updateMyBook() {
 		
 	}
 	
 	public void updateChart() {
-		
-	}
-	
-	public void subHistory() {
 		
 	}
 	
